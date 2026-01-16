@@ -1,40 +1,80 @@
-# ContextMesh
+# ContextMesh 🕸️
 
-A 48-hour sprint to build a "Living Documentation" tool using Gemini 1.5 Pro's 2M context window.
+**Living Documentation & Code Analysis Powered by Gemini 1.5 Pro**
 
-## Architecture: "Lean Monolith"
+ContextMesh is a cutting-edge "Lean Monolith" application designed to bridge the gap between code and documentation. Leveraging the massive 2M token context window of Google's Gemini 1.5 Pro, it ingests entire repositories to provide holistic analysis, refactoring advice, and automated documentation.
 
-- **Backend**: FastAPI (Python) - Handles ingestion and Gemini API interactions.
-- **Frontend**: Next.js 15 (React) - Dashboard for visualization and chat.
+---
 
-## Prerequisites
+## 🤖 The Agents
 
+ContextMesh exposes three distinct AI personas to interact with your codebase:
+
+### 🏗️ The Architect
+Analyzes high-level patterns, dependencies, and architectural health.
+- Identifies circular imports and scalability bottlenecks.
+- Generates "Health Scores" for Modularity, Documentation, and Test Coverage.
+
+### 🔧 The Refactorer
+Your dedicated technical debt collector.
+- Identifies messy code and anti-patterns.
+- Provides specific "Before" and "After" refactoring plans.
+- Predicts the impact of proposed changes.
+
+### 📚 The Documentarian
+Turns code into plain English.
+- Generates comprehensive READMEs and "Living Documentation".
+- Explains data flow and key architectural decisions, not just syntax.
+
+---
+
+## 🛠️ Tech Stack
+
+### Backend
+- **Framework**: [FastAPI](https://fastapi.tiangolo.com/) (Python)
+- **AI Model**: Google Gemini 1.5 Pro (via `google-genai`)
+- **Utilities**: `pathspec` (gitignore handling), `pydantic` (validation)
+- **Integration**: GitHub Webhooks
+
+### Frontend
+- **Framework**: [Next.js 16](https://nextjs.org/) (App Router)
+- **Library**: React 19
+- **Styling**: Tailwind CSS v4
+- **Icons**: Lucide React
+
+---
+
+## 🚀 Getting Started
+
+### Prerequisites
 - Python 3.10+
 - Node.js 18+
-- Google Gemini API Key
+- A Google Cloud Project with Gemini API enabled ([Get API Key](https://aistudio.google.com/))
 
-## Setup
+### Installation
 
-1.  **Clone/Open Repository**
+1.  **Clone the Repository**
     ```bash
-    git clone <repo>
+    git clone https://github.com/yourusername/contextmesh.git
     cd contextmesh
     ```
 
 2.  **Backend Setup**
     ```bash
-    # Create virtual environment (optional but recommended)
+    # It is recommended to use a virtual environment
     python -m venv venv
-    source venv/bin/activate  # or venv\Scripts\activate on Windows
+    source venv/bin/activate  # Windows: venv\Scripts\activate
 
-    # Install dependencies
+    # Install Python dependencies
     pip install -r backend/requirements.txt
 
-    # Set API Key
-    # Create a .env file in root or set env var
-    # You can use either GOOGLE_API_KEY or GEMINI_API_KEY
-    export GEMINI_API_KEY="your_key_here"
+    # Set your API Key
+    # Linux/Mac
+    export GEMINI_API_KEY="your_actual_api_key_here"
+    # Windows (PowerShell)
+    $env:GEMINI_API_KEY="your_actual_api_key_here"
     ```
+    *(Alternatively, create a `.env` file in the root directory)*
 
 3.  **Frontend Setup**
     ```bash
@@ -42,18 +82,31 @@ A 48-hour sprint to build a "Living Documentation" tool using Gemini 1.5 Pro's 2
     npm install
     ```
 
-## Running the App
+---
 
-1.  **Start Backend** (from root)
-    ```bash
-    uvicorn backend.main:app --reload --port 8000
-    ```
+## ⚡ Running the Application
 
-2.  **Start Frontend** (from `frontend/`)
-    ```bash
-    npm run dev
-    ```
+You will need two terminal windows to run the full stack.
 
-3.  **Access**
-    - Application: [http://localhost:3000](http://localhost:3000)
-    - Backend Docs: [http://localhost:8000/docs](http://localhost:8000/docs)
+### 1. Start the Backend API
+From the project root:
+```bash
+uvicorn backend.main:app --reload --port 8000
+```
+- **API URL**: [http://localhost:8000](http://localhost:8000)
+- **Interactive Docs**: [http://localhost:8000/docs](http://localhost:8000/docs)
+
+### 2. Start the Frontend Dashboard
+From the `frontend/` directory:
+```bash
+npm run dev
+```
+- **Dashboard**: [http://localhost:3000](http://localhost:3000)
+
+---
+
+## 🔌 API Endpoints
+
+- `POST /analyze`: Main endpoint to trigger an agent (Architect, Refactorer, Documentarian) on a local path.
+- `POST /webhook`: Webhook receiver for GitHub events.
+- `GET /events`: Fetch recent webhook events.
