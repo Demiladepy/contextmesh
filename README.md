@@ -6,29 +6,29 @@ ContextMesh is a cutting-edge "Lean Monolith" application designed to bridge the
 
 ---
 
-## 🤖 The Agents
+##  The Agents
 
 ContextMesh exposes three distinct AI personas to interact with your codebase:
 
-### 🏗️ The Architect
+###  The Architect
 Analyzes high-level patterns, dependencies, and architectural health.
 - Identifies circular imports and scalability bottlenecks.
 - Generates "Health Scores" for Modularity, Documentation, and Test Coverage.
 
-### 🔧 The Refactorer
+###  The Refactorer
 Your dedicated technical debt collector.
 - Identifies messy code and anti-patterns.
 - Provides specific "Before" and "After" refactoring plans.
 - Predicts the impact of proposed changes.
 
-### 📚 The Documentarian
+###  The Documentarian
 Turns code into plain English.
 - Generates comprehensive READMEs and "Living Documentation".
 - Explains data flow and key architectural decisions, not just syntax.
 
 ---
 
-## 🛠️ Tech Stack
+##  Tech Stack
 
 ### Backend
 - **Framework**: [FastAPI](https://fastapi.tiangolo.com/) (Python)
@@ -44,7 +44,7 @@ Turns code into plain English.
 
 ---
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites
 - Python 3.10+
@@ -84,7 +84,7 @@ Turns code into plain English.
 
 ---
 
-## ⚡ Running the Application
+##  Running the Application
 
 You will need two terminal windows to run the full stack.
 
@@ -105,7 +105,7 @@ npm run dev
 
 ---
 
-## 🔌 API Endpoints
+##  API Endpoints
 
 - `POST /analyze`: Main endpoint to trigger an agent (Architect, Refactorer, Documentarian) on a local path.
 - `POST /webhook`: Webhook receiver for GitHub events.
