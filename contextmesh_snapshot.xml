@@ -1,0 +1,100 @@
+<codebase>
+<file path=".gitignore">
+node_modules/
+*.log
+secret.txt
+
+</file>
+<file path="ingest.py">
+import os
+import pathspec
+
+def is_binary(file_path):
+    """
+    Check if a file is binary.
+    Reads a small chunk of the file to check for null bytes.
+    """
+    try:
+        with open(file_path, 'rb') as f:
+            chunk = f.read(1024)
+            if b'\0' in chunk:
+                return True
+    except Exception:
+        return True # Treat read errors as binary/unreadable
+    return False
+
+def get_ignore_spec(root_dir):
+    """
+    Load .gitignore if it exists, otherwise use default ignores.
+    """
+    gitignore_path = os.path.join(root_dir, '.gitignore')
+    patterns = [
+        '.git',
+        'node_modules',
+        '__pycache__',
+        'venv',
+        'env',
+        '*.lock',
+        'package-lock.json',
+        'dist',
+        'build',
+        '*.pyc',
+        '.DS_Store',
+        'contextmesh_snapshot.xml' # Don't ingest the output file itself
+    ]
+    
+    if os.path.exists(gitignore_path):
+        with open(gitignore_path, 'r') as f:
+            patterns.extend(f.read().splitlines())
+            
+    return pathspec.PathSpec.from_lines('gitwildmatch', patterns)
+
+def ingest_codebase(root_dir, output_file):
+    """
+    Walks the directory, filters files, and writes XML output.
+    """
+    spec = get_ignore_spec(root_dir)
+    
+    with open(output_file, 'w', encoding='utf-8') as outfile:
+        outfile.write("<codebase>\n")
+        
+        for root, dirs, files in os.walk(root_dir):
+            # Prune directories based on ignore patterns
+            # We must modify 'dirs' in-place to affect os.walk recursion
+            dirs[:] = [d for d in dirs if not spec.match_file(os.path.relpath(os.path.join(root, d), root_dir))]
+            
+            for file in files:
+                abs_path = os.path.join(root, file)
+                rel_path = os.path.relpath(abs_path, root_dir)
+                
+                if spec.match_file(rel_path):
+                    continue
+                    
+                if is_binary(abs_path):
+                    print(f"Skipping binary file: {rel_path}")
+                    continue
+                
+                try:
+                    with open(abs_path, 'r', encoding='utf-8', errors='ignore') as infile:
+                        content = infile.read()
+                        outfile.write(f'<file path="{rel_path}">\n')
+                        outfile.write(content)
+                        outfile.write(f'\n</file>\n')
+                        print(f"Ingested: {rel_path}")
+                except Exception as e:
+                    print(f"Error reading {rel_path}: {e}")
+
+        outfile.write("</codebase>\n")
+    print(f"Ingestion complete. Output saved to {output_file}")
+
+if __name__ == "__main__":
+    ROOT_DIR = "."
+    OUTPUT_FILE = "contextmesh_snapshot.xml"
+    ingest_codebase(ROOT_DIR, OUTPUT_FILE)
+
+</file>
+<file path="src\main.py">
+print("Hello, World!")
+
+</file>
+</codebase>

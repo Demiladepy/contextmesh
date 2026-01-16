@@ -1,0 +1,6 @@
+fastapi
+uvicorn
+google-genai>=0.3.0
+python-dotenv
+pathspec
+requests
