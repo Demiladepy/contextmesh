@@ -4,7 +4,7 @@ from google import genai
 from google.genai import types
 
 # Constants
-MODEL_NAME = "gemini-1.5-flash-001" # Switching to Flash for better availability
+MODEL_NAME = "gemini-1.5-flash" # Using the standard Flash model name
 
 class GeminiService:
     def __init__(self):
